@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using ECommerce.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -7,31 +8,34 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz satırdır.
 
-app.Use(async (context, next) =>
-{
-    //next çağrılmadan önce; bu middleware'in çalıştığını söyle:
-    app.Logger.LogInformation("Logging için middleware'e istek geldi...");
-    await next(context);
-    //next çağrıldıktan sonra: response oluştu demektir.
-    app.Logger.LogInformation("Gelen istek: {Method} {Path} -> dönen response: {StatusCode}",
-                            context.Request.Method, context.Request.Path, context.Response.StatusCode);
+// app.Use(async (context, next) =>
+// {
+//     //next çağrılmadan önce; bu middleware'in çalıştığını söyle:
+//     app.Logger.LogInformation("Logging için middleware'e istek geldi...");
+//     await next(context);
+//     //next çağrıldıktan sonra: response oluştu demektir.
+//     app.Logger.LogInformation("Gelen istek: {Method} {Path} -> dönen response: {StatusCode}",
+//                             context.Request.Method, context.Request.Path, context.Response.StatusCode);
 
-});
+// });
 
-app.Use(async (context, next) =>
-{
-    //next çağrılmadan önce: timer'ı başlat!
-    var stopWatch = Stopwatch.StartNew();
-    app.Logger.LogInformation("İstek şimdi zaman ölçme middleware'inde ve kronometre başladı!");
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<RequestTimingMiddleware>();
 
-    await next(context);
+// app.Use(async (context, next) =>
+// {
+//     //next çağrılmadan önce: timer'ı başlat!
+//     var stopWatch = Stopwatch.StartNew();
+//     app.Logger.LogInformation("İstek şimdi zaman ölçme middleware'inde ve kronometre başladı!");
+
+//     await next(context);
 
 
-    stopWatch.Stop();
-    //next çağrıldıktan sonra: response oluştu demektir.
-    app.Logger.LogInformation("Yanıt, {ms} milisaniyede oluştu.",stopWatch.ElapsedMilliseconds);
+//     stopWatch.Stop();
+//     //next çağrıldıktan sonra: response oluştu demektir.
+//     app.Logger.LogInformation("Yanıt, {ms} milisaniyede oluştu.",stopWatch.ElapsedMilliseconds);
 
-});
+// });
 
 
 
