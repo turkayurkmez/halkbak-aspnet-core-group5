@@ -1,0 +1,36 @@
+{
+  "name": "ECommerce API (.NET 10)",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:1-10.0",
+
+  "forwardPorts": [5001, 7242],
+  "portsAttributes": {
+    "5001": { "label": "ECommerce API (http)", "onAutoForward": "notify" },
+    "7242": { "label": "ECommerce API (https)", "onAutoForward": "silent" }
+  },
+
+  "mounts": [
+    "source=halkbank-group5-nuget,target=/home/vscode/.nuget,type=volume"
+  ],
+
+  "containerEnv": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "DOTNET_NOLOGO": "1"
+  },
+
+  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.nuget && dotnet restore ECommerce/ECommerce.slnx",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "humao.rest-client"
+      ],
+      "settings": {
+        "dotnet.defaultSolution": "ECommerce/ECommerce.slnx",
+        "files.exclude": { "**/bin": true, "**/obj": true }
+      }
+    }
+  }
+}

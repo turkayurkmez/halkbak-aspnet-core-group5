@@ -1,10 +1,13 @@
 using System.Diagnostics;
+using ECommerce.API;
 using ECommerce.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Bir httpRequest'in gerek duyduğu tüm nesneleri burada kofigüre eder ve "çantaya eklersiniz."
 // Yani, teknik olarak HttpContext nesnesinin erişmesi gereken nesneleri burada ekiyorsunuz
+
+
 
 var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz satırdır.
 
@@ -18,7 +21,7 @@ var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz sat�
 //                             context.Request.Method, context.Request.Path, context.Response.StatusCode);
 
 // });
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<RequestTimingMiddleware>();
 
@@ -42,4 +45,5 @@ app.UseMiddleware<RequestTimingMiddleware>();
 
 // Configure the HTTP request pipeline.
 app.MapGet("/ping", () => Results.Ok(new { durum = "Her şey yolunda" }));
+app.MapGet("/error", () => { throw new NotImplementedException(); });
 app.Run();
