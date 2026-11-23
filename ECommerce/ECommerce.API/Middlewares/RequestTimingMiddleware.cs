@@ -19,7 +19,7 @@ public class RequestTimingMiddleware
         logger.LogInformation("İstek şimdi zaman ölçme middleware'inde ve kronometre başladı!");
 
 
-        throw new NullReferenceException("Bu hatayı bilerek fırlattık!!");
+        //throw new NullReferenceException("Bu hatayı bilerek fırlattık!!");
         await _next(context);
 
 

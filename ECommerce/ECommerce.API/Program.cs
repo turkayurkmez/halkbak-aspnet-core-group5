@@ -1,15 +1,21 @@
 using System.Diagnostics;
 using ECommerce.API;
 using ECommerce.API.Middlewares;
+using ECommerce.API.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Bir httpRequest'in gerek duyduğu tüm nesneleri burada kofigüre eder ve "çantaya eklersiniz."
 // Yani, teknik olarak HttpContext nesnesinin erişmesi gereken nesneleri burada ekiyorsunuz
-
-
+builder.Services.AddControllers();
+//appSettings.json içindeki Shop bölümünün değerlerini oku!!!
+builder.Services.Configure<ShopOptions>(builder.Configuration.GetSection(ShopOptions.SectionName));
 
 var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz satırdır.
+
+
+var currency = builder.Configuration["Shop:Currency"];
+app.Logger.LogInformation("!!!!BİLGİ!!!! Para birimi: {currency} ",currency);
 
 // app.Use(async (context, next) =>
 // {
@@ -46,4 +52,7 @@ app.UseMiddleware<RequestTimingMiddleware>();
 // Configure the HTTP request pipeline.
 app.MapGet("/ping", () => Results.Ok(new { durum = "Her şey yolunda" }));
 app.MapGet("/error", () => { throw new NotImplementedException(); });
+
+app.MapControllers();
+
 app.Run();
