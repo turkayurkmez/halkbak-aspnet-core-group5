@@ -2,6 +2,8 @@ using System.Diagnostics;
 using ECommerce.API;
 using ECommerce.API.Middlewares;
 using ECommerce.API.Options;
+using ECommerce.Application;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -10,6 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 //appSettings.json içindeki Shop bölümünün değerlerini oku!!!
 builder.Services.Configure<ShopOptions>(builder.Configuration.GetSection(ShopOptions.SectionName));
+builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<ProductService>();
 
 var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz satırdır.
 
@@ -54,5 +59,11 @@ app.MapGet("/ping", () => Results.Ok(new { durum = "Her şey yolunda" }));
 app.MapGet("/error", () => { throw new NotImplementedException(); });
 
 app.MapControllers();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.Run();

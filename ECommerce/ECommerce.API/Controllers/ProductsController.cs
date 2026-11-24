@@ -11,21 +11,30 @@ namespace ECommerce.API.Controllers
     {
 
         private readonly ShopOptions shopOptions;
-        public ProductsController(IOptions<ShopOptions> options)
+        private readonly ProductService productService;
+        public ProductsController(IOptions<ShopOptions> options, ProductService productService)
         {
             shopOptions = options.Value;
+            this.productService = productService;
         }
 
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            var productService = new ProductService();
+           
             return Ok(await productService.GetProductsAsync());
         }
-        
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProduct(int id)
+        {
+          
+            return Ok(await productService.GetProductAsync(id));
+        }
+
         [HttpGet("info")]
         public IActionResult GetShopInfo()
-        {       
+        {
             return Ok(shopOptions);
         }
     }
