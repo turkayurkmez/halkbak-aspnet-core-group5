@@ -1,4 +1,5 @@
 using ECommerce.API.Options;
+using ECommerce.Application;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -16,9 +17,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]        
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
-            return Ok(new {message="Burada ürünler döndürülecek!"} );
+            var productService = new ProductService();
+            return Ok(await productService.GetProductsAsync());
         }
         
         [HttpGet("info")]
