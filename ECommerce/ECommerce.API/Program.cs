@@ -3,6 +3,8 @@ using ECommerce.API;
 using ECommerce.API.Middlewares;
 using ECommerce.API.Options;
 using ECommerce.Application;
+using ECommerce.Application.Notifications;
+using ECommerce.Application.Services;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,11 @@ builder.Services.Configure<ShopOptions>(builder.Configuration.GetSection(ShopOpt
 builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<ProductService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddSingleton<INotificationChannel, SMSNotification>();
+builder.Services.AddSingleton<INotificationChannel, EmailNotification>();
+builder.Services.AddSingleton<INotificationChannel, WhatsAppNotification>();
 
 var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz satırdır.
 

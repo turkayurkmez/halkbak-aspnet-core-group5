@@ -4,7 +4,7 @@ using Demo.SOLID;
 Console.WriteLine("Hello, World!");
 
 Customer customer =new Customer();
-customer.CardType = new Premium();
+customer.CardType = new Gold();
 PaymentSystemAfter paymentSystemAfter = new PaymentSystemAfter();
 paymentSystemAfter.Customer = customer;
 System.Console.WriteLine(paymentSystemAfter.DiscountedPrice(100));
