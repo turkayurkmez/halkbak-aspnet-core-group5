@@ -43,3 +43,13 @@ public class WhatsAppNotification(ILogger<SMSNotification> logger) : INotificati
 
     }
 }
+
+// public class FaxNotification : INotificationChannel
+// {
+//     public string Name => throw new NotImplementedException();
+
+//     public Task SendAsync(string to, string message)
+//     {
+      
+//     }
+// }

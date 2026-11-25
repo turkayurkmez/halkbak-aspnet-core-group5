@@ -8,3 +8,7 @@ customer.CardType = new Gold();
 PaymentSystemAfter paymentSystemAfter = new PaymentSystemAfter();
 paymentSystemAfter.Customer = customer;
 System.Console.WriteLine(paymentSystemAfter.DiscountedPrice(100));
+
+var rect = Geometry.GetRectangle(3,5);
+
+System.Console.WriteLine(rect.GetArea());

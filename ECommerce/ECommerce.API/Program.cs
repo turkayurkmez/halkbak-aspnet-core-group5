@@ -23,6 +23,7 @@ builder.Services.AddSingleton<INotificationChannel, SMSNotification>();
 builder.Services.AddSingleton<INotificationChannel, EmailNotification>();
 builder.Services.AddSingleton<INotificationChannel, WhatsAppNotification>();
 
+
 var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz satırdır.
 
 
