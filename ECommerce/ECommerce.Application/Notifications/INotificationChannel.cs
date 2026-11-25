@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Extensions.Logging;
 
 namespace ECommerce.Application.Notifications;
 
@@ -9,41 +8,9 @@ public interface INotificationChannel
      Task SendAsync(string to, string message);
 }
 
-public class EmailNotification(ILogger<EmailNotification> logger) : INotificationChannel
-{
-    public string Name => "E-POSTA";
 
-    public async Task SendAsync(string to, string message)
-    {
-        await Task.CompletedTask;
-        logger.LogInformation("[{Channel}] {To}: {Message} gönderildi", Name, to, message);
-    }
-}
-
-public class SMSNotification(ILogger<SMSNotification> logger) : INotificationChannel
-{
-    public string Name => "SMS";
-
-    public async Task SendAsync(string to, string message)
-    {
-        await Task.CompletedTask;
-        logger.LogInformation("[{Channel}] {To}: {Message} gönderildi", Name, to, message);
-
-    }
-}
-
-public class WhatsAppNotification(ILogger<SMSNotification> logger) : INotificationChannel
-{
-    public string Name => "WhatsApp";
-
-    public async Task SendAsync(string to, string message)
-    {
-        await Task.CompletedTask;
-        logger.LogInformation("[{Channel}] {To}: {Message} gönderildi", Name, to, message);
-
-    }
-}
-
+// Liskov's Substution Prensibini ihlal etme senaryosu: 
+// eğer exception fırlıyorsa, kendisini implemente eden interface'in yerine kullanılamaz.
 // public class FaxNotification : INotificationChannel
 // {
 //     public string Name => throw new NotImplementedException();
