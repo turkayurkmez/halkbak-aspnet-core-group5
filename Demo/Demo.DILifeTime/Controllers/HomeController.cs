@@ -11,7 +11,7 @@ public class HomeController(ISingleton singleton, IScoped scoped, ITransient tra
     {
         ViewBag.Singleton = singleton.Guid.ToString();
         ViewBag.Scoped = scoped.Guid.ToString();
-        ViewBag.Transient = scoped.Guid.ToString();
+        ViewBag.Transient = transient.Guid.ToString();
 
         ViewBag.ServiceSingleton = guidService.Singleton.Guid.ToString();
         ViewBag.ServiceScoped = guidService.Scoped.Guid.ToString();

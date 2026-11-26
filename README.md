@@ -1,6 +1,6 @@
 # ASP.NET Core Eğitim Projesi
 
-Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID ilkelerini gösteren bir konsol demosunu içerir. Projeler, işlenen konuları küçük ve incelenebilir örneklerle göstermek amacıyla hazırlanmıştır.
+Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID ile dependency injection konularını gösteren küçük demoları içerir. Projeler, işlenen konuları incelenebilir örneklerle göstermek amacıyla hazırlanmıştır.
 
 ## Proje yapısı
 
@@ -8,7 +8,9 @@ Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID
 - [ECommerce.API](ECommerce/ECommerce.API): ASP.NET Core web uygulaması.
 - [ECommerce.Application](ECommerce/ECommerce.Application): Bellek içi ürün işlemlerini sağlayan uygulama katmanı.
 - [ECommerce.Domain](ECommerce/ECommerce.Domain): Ürün varlığını içeren domain katmanı.
+- [ECommerce.Infrastructure](ECommerce/ECommerce.Infrastructure): Repository sözleşmelerinin altyapı uygulamalarını içeren katman.
 - [Demo.SOLID](Demo/Demo.SOLID): SRP, OCP, LSP ve ISP örneklerini içeren konsol uygulaması.
+- [Demo.DILifeTime](Demo/Demo.DILifeTime): Singleton, Scoped ve Transient dependency injection yaşam süreleri için POC.
 - [Program.cs](ECommerce/ECommerce.API/Program.cs): Uygulamanın oluşturulması, HTTP işlem hattı ve `/ping` uç noktası.
 - [Middlewares](ECommerce/ECommerce.API/Middlewares): İstekleri günlüğe kaydeden ve sürelerini ölçen özel middleware sınıfları.
 - [ProductsController.cs](ECommerce/ECommerce.API/Controllers/ProductsController.cs): Ürün ve mağaza bilgisi için örnek controller uç noktaları.
@@ -59,6 +61,15 @@ Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID
 3. **SOLID — Liskov'un Yerine Geçme İlkesi (LSP):** [LSP.cs](Demo/Demo.SOLID/LSP.cs), `Rectangle` ve `Square` türlerini ortak `IArea` arayüzüyle kullanır; `Square`, `Rectangle` alt sınıfı değildir. Böylece kare kenarını değiştirirken genişlik/yükseklik davranışını beklenmedik biçimde değiştiren klasik kalıtım sorunu önlenir. `Geometry.GetRectangle`, ölçü argümanlarına göre bu iki uygulamadan birini `IArea` olarak döndürür.
 4. **SOLID — Arayüz Ayırma İlkesi (ISP):** [ISP.cs](Demo/Demo.SOLID/ISP.cs), temel işlemleri (`IMath`) ileri işlemlerden (`IAdvancedMath`) ayırır. `SimpleMath` yalnızca temel işlemleri uygulayarak kullanmadığı metotlara bağımlı olmaz. `ComplexMath` her iki arayüzü uygular ancak metotları şu an `NotImplementedException` fırlatır; tamamlanmış bir matematik uygulaması değildir.
 5. **Fax kanalı taslağı:** `c97a73c` commit mesajındaki fax kanalı uygulaması mevcut kaynakta etkin değildir; fax kodu yorum satırına alınmıştır. Bu nedenle çalışan bildirim kanalları yalnızca e-posta, SMS ve WhatsApp'tır.
+
+### 26 Kasım 2026
+
+İncelenen commit'ler: `50260c1`–`483874f`.
+
+1. **Repository sözleşmeleri ve katman ayrımı:** `IRepository<T>`, ortak listeleme, kimliğe göre getirme ve CRUD operasyonlarını tanımlar; `IProductRepository` ürün kategorisi ve fiyat aralığı sorgularıyla bu sözleşmeyi genişletir. `InMemoryProductRepository`, Infrastructure katmanında ürün repository'sinin uygulamasıdır.
+2. **SOLID — Bağımlılıkların Tersine Çevrilmesi (DIP):** `ProductService`, `IProductRepository`'ye; controller'lar ise `IProductService` ve `IOrderService` arayüzlerine bağımlıdır. DI kayıtları bu soyutlamaları somut sınıflara bağlar. [DIP.cs](Demo/Demo.SOLID/DIP.cs) örneğinde de `ReportGenerator`, doğrudan `EpostaSender` oluşturmak yerine `ISender` alır.
+3. **Bellek içi repository'nin mevcut durumu:** `InMemoryProductRepository` üç örnek ürünle başlar; yalnızca `ListAsync` uygulanmıştır. Kimliğe göre getirme, ekleme, güncelleme, silme ve diğer sorgular henüz `NotImplementedException` fırlatır; dolayısıyla ürün servisi uç noktalarının tamamı çalışır durumda değildir.
+4. **DILifeTime POC'si:** [GuidService.cs](Demo/Demo.DILifeTime/Services/GuidService.cs), Singleton, Scoped ve Transient olarak adlandırılmış GUID sağlayıcılarını ve bu bağımlılıkları alan bir servisi tanımlar. [HomeController.cs](Demo/Demo.DILifeTime/Controllers/HomeController.cs) hem doğrudan aldığı bağımlılıkların hem `GuidService` içindeki bağımlılıkların GUID değerlerini görünüme taşır; [Index.cshtml](Demo/Demo.DILifeTime/Views/Home/Index.cshtml) bunları göstererek yaşam sürelerini karşılaştırma amacını destekler. Projenin geri kalanı bu POC kapsamına dahil değildir ve template'tir.
 
 ## Çalıştırma
 
