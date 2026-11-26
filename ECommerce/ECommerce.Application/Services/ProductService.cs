@@ -1,8 +1,8 @@
 ﻿using ECommerce.Domain;
 
-namespace ECommerce.Application;
+namespace ECommerce.Application.Services;
 
-public class ProductService
+public class ProductService : IProductService
 {
     //amacımız db olmadığı için koleksiyon bellekte:
     private readonly List<Product> products = new()
@@ -11,7 +11,7 @@ public class ProductService
          new Product{ Id=2, Name="Ürün B", Price=100, CategoryId=1, Sku="Test-002", Stock=100},
          new Product{ Id=3, Name="Ürün C", Price=100, CategoryId=1, Sku="Test-003", Stock=100}
 
-    } ;
+    };
 
     public async Task<IReadOnlyList<Product>> GetProductsAsync()
     {
@@ -22,7 +22,7 @@ public class ProductService
     public async Task<Product?> GetProductAsync(int id)
     {
         await Task.CompletedTask;
-        return products.FirstOrDefault(p=>p.Id == id);
+        return products.FirstOrDefault(p => p.Id == id);
     }
 
     public async Task<Product> Create(Product product)

@@ -2,7 +2,7 @@ using System.Diagnostics;
 using ECommerce.API;
 using ECommerce.API.Middlewares;
 using ECommerce.API.Options;
-using ECommerce.Application;
+
 using ECommerce.Application.Notifications;
 using ECommerce.Application.Services;
 using Scalar.AspNetCore;
@@ -16,8 +16,8 @@ builder.Services.AddControllers();
 builder.Services.Configure<ShopOptions>(builder.Configuration.GetSection(ShopOptions.SectionName));
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<ProductService>();
-builder.Services.AddScoped<OrderService>();
+builder.Services.AddSingleton<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddSingleton<INotificationChannel, SMSNotification>();
 builder.Services.AddSingleton<INotificationChannel, EmailNotification>();

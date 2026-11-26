@@ -6,7 +6,7 @@ namespace ECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController(OrderService orderService) : ControllerBase
+    public class OrdersController(IOrderService orderService) : ControllerBase
     {
         [HttpPost]
         public async Task<IActionResult> CreateOrder()
