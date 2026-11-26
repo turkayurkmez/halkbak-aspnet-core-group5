@@ -24,10 +24,10 @@ public class ExceptionHandlingMiddleware
             
             await _next(context);
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
             //http isteğinin yaşamı boyunca ve elbette yanıt istemciye gönderilmeden önce her yerdeki hatalar buraya düşecek:
-            _logger.LogError("İşlenmeyen hata: {Method} {Path}",context.Request.Method, context.Request.Path);
+            _logger.LogError(ex, "İşlenmeyen hata: {Method} {Path}",context.Request.Method, context.Request.Path);
             
             if (context.Response.HasStarted)
             {
