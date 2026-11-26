@@ -8,7 +8,7 @@ Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID
 - [ECommerce.API](ECommerce/ECommerce.API): ASP.NET Core web uygulaması.
 - [ECommerce.Application](ECommerce/ECommerce.Application): Bellek içi ürün işlemlerini sağlayan uygulama katmanı.
 - [ECommerce.Domain](ECommerce/ECommerce.Domain): Ürün varlığını içeren domain katmanı.
-- [Demo.SOLID](Demo/Demo.SOLID): SRP ve OCP örneklerini içeren konsol uygulaması.
+- [Demo.SOLID](Demo/Demo.SOLID): SRP, OCP, LSP ve ISP örneklerini içeren konsol uygulaması.
 - [Program.cs](ECommerce/ECommerce.API/Program.cs): Uygulamanın oluşturulması, HTTP işlem hattı ve `/ping` uç noktası.
 - [Middlewares](ECommerce/ECommerce.API/Middlewares): İstekleri günlüğe kaydeden ve sürelerini ölçen özel middleware sınıfları.
 - [ProductsController.cs](ECommerce/ECommerce.API/Controllers/ProductsController.cs): Ürün ve mağaza bilgisi için örnek controller uç noktaları.
@@ -49,6 +49,16 @@ Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID
 4. **OpenAPI ve Scalar:** Development ortamında OpenAPI belgesi `/openapi/v1.json` adresinde, Scalar arayüzü `/scalar/v1` adresinde sunulur. Bu uç noktalar Production ortamında eşlenmez.
 5. **SOLID — Tek Sorumluluk İlkesi (SRP):** [SRP.cs](Demo/Demo.SOLID/SRP.cs), ürün oluşturma, e-posta ve ekran sorumluluklarının tek sınıfta toplanmasını, bu görevlerin ayrı sınıflara bölündüğü örnekle karşılaştırır. İşlemler açıklayıcı taslaklardır; gerçek veritabanı veya e-posta işlemi yapılmaz.
 6. **SOLID — Açık/Kapalı İlkesi (OCP):** [OCP.cs](Demo/Demo.SOLID/OCP.cs) içinde `PaymentSystemAfter`, indirim hesabını müşterinin `CardType` nesnesine devreder. `Standard`, `Silver`, `Gold` ve `Premium` sırasıyla %5, %10, %15 ve %20 indirim uygular. Yeni bir kart türü, ödeme sistemindeki hesaplama kodu değiştirilmeden `CardTypes` sınıfından türetilebilir.
+
+### 25 Kasım 2026
+
+İncelenen commit'ler: `39988cc`–`eb4e409`.
+
+1. **Sipariş oluşturma ve sorumlulukların ayrılması (SRP):** `POST /api/orders`, `OrdersController` üzerinden `OrderService.CreateOrder` metodunu çağırır. Servis siparişin oluşturulduğunu varsayarak `NotificationService`'i çağırır; `NotificationService` kanallara dağıtım yapar, her kanal kendi gönderim davranışını ve günlüğünü yönetir. Veritabanına gerçek kayıt yapılmaz.
+2. **Bildirim kanalları (OCP ve DIP):** `NotificationService`, somut e-posta/SMS/WhatsApp sınıfları yerine `INotificationChannel` soyutlamasına bağımlıdır ve DI ile verilen kanalların tümüne sırayla bildirim gönderir. Yeni bir kanal bu sözleşmeyi uygulayıp DI kaydına eklenerek dağıtım servisi değiştirilmeden eklenebilir. Mevcut kanallar gerçek bir sağlayıcıya gönderim yapmaz; tamamlanmış görev günlüğü yazar.
+3. **SOLID — Liskov'un Yerine Geçme İlkesi (LSP):** [LSP.cs](Demo/Demo.SOLID/LSP.cs), `Rectangle` ve `Square` türlerini ortak `IArea` arayüzüyle kullanır; `Square`, `Rectangle` alt sınıfı değildir. Böylece kare kenarını değiştirirken genişlik/yükseklik davranışını beklenmedik biçimde değiştiren klasik kalıtım sorunu önlenir. `Geometry.GetRectangle`, ölçü argümanlarına göre bu iki uygulamadan birini `IArea` olarak döndürür.
+4. **SOLID — Arayüz Ayırma İlkesi (ISP):** [ISP.cs](Demo/Demo.SOLID/ISP.cs), temel işlemleri (`IMath`) ileri işlemlerden (`IAdvancedMath`) ayırır. `SimpleMath` yalnızca temel işlemleri uygulayarak kullanmadığı metotlara bağımlı olmaz. `ComplexMath` her iki arayüzü uygular ancak metotları şu an `NotImplementedException` fırlatır; tamamlanmış bir matematik uygulaması değildir.
+5. **Fax kanalı taslağı:** `c97a73c` commit mesajındaki fax kanalı uygulaması mevcut kaynakta etkin değildir; fax kodu yorum satırına alınmıştır. Bu nedenle çalışan bildirim kanalları yalnızca e-posta, SMS ve WhatsApp'tır.
 
 ## Çalıştırma
 
