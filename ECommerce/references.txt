@@ -1,0 +1,5 @@
+EF Referans notları:
+
+1. EF Core Sqlite -> ECommerce.Infrastructure
+2. (Visual Studio kullanıyorsanız) EF Core Tools -> ECommerce.Infrastructure
+3. EF Code Design -> ECommerce.API

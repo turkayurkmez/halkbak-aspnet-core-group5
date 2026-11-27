@@ -15,5 +15,8 @@ public class Product
     public int Stock { get; set; }
     public int CategoryId { get; set; }
 
+    //Navigation Property:
+    public virtual Category? Category { get; set; }
+
 
 }
