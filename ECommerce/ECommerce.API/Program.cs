@@ -5,7 +5,9 @@ using ECommerce.API.Options;
 using ECommerce.Application.Contracts;
 using ECommerce.Application.Notifications;
 using ECommerce.Application.Services;
+using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,8 @@ builder.Services.AddSingleton<INotificationChannel, EmailNotification>();
 builder.Services.AddSingleton<INotificationChannel, WhatsAppNotification>();
 builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
 
+var connectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContext<AppDbContext>(option=>option.UseSqlite(connectionString));
 
 var app = builder.Build(); //bu satır çantanın fermuarını çektiğiniz satırdır.
 
