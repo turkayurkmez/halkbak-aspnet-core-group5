@@ -8,7 +8,7 @@ Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID
 - [ECommerce.API](ECommerce/ECommerce.API): ASP.NET Core web uygulaması.
 - [ECommerce.Application](ECommerce/ECommerce.Application): Bellek içi ürün işlemlerini sağlayan uygulama katmanı.
 - [ECommerce.Domain](ECommerce/ECommerce.Domain): Ürün varlığını içeren domain katmanı.
-- [ECommerce.Infrastructure](ECommerce/ECommerce.Infrastructure): Repository sözleşmelerinin altyapı uygulamalarını içeren katman.
+- [ECommerce.Infrastructure](ECommerce/ECommerce.Infrastructure): SQLite/EF Core `DbContext`, migration'lar ve repository uygulamalarını içeren katman.
 - [Demo.SOLID](Demo/Demo.SOLID): SRP, OCP, LSP ve ISP örneklerini içeren konsol uygulaması.
 - [Demo.DILifeTime](Demo/Demo.DILifeTime): Singleton, Scoped ve Transient dependency injection yaşam süreleri için POC.
 - [Program.cs](ECommerce/ECommerce.API/Program.cs): Uygulamanın oluşturulması, HTTP işlem hattı ve `/ping` uç noktası.
@@ -70,6 +70,15 @@ Bu depo, ASP.NET Core eğitiminde geliştirilen ECommerce API projesini ve SOLID
 2. **SOLID — Bağımlılıkların Tersine Çevrilmesi (DIP):** `ProductService`, `IProductRepository`'ye; controller'lar ise `IProductService` ve `IOrderService` arayüzlerine bağımlıdır. DI kayıtları bu soyutlamaları somut sınıflara bağlar. [DIP.cs](Demo/Demo.SOLID/DIP.cs) örneğinde de `ReportGenerator`, doğrudan `EpostaSender` oluşturmak yerine `ISender` alır.
 3. **Bellek içi repository'nin mevcut durumu:** `InMemoryProductRepository` üç örnek ürünle başlar; yalnızca `ListAsync` uygulanmıştır. Kimliğe göre getirme, ekleme, güncelleme, silme ve diğer sorgular henüz `NotImplementedException` fırlatır; dolayısıyla ürün servisi uç noktalarının tamamı çalışır durumda değildir.
 4. **DILifeTime POC'si:** [GuidService.cs](Demo/Demo.DILifeTime/Services/GuidService.cs), Singleton, Scoped ve Transient olarak adlandırılmış GUID sağlayıcılarını ve bu bağımlılıkları alan bir servisi tanımlar. [HomeController.cs](Demo/Demo.DILifeTime/Controllers/HomeController.cs) hem doğrudan aldığı bağımlılıkların hem `GuidService` içindeki bağımlılıkların GUID değerlerini görünüme taşır; [Index.cshtml](Demo/Demo.DILifeTime/Views/Home/Index.cshtml) bunları göstererek yaşam sürelerini karşılaştırma amacını destekler. Projenin geri kalanı bu POC kapsamına dahil değildir ve template'tir.
+
+### 27 Kasım 2026
+
+İncelenen commit'ler: `a67a849`–`3bf3e57`.
+
+1. **Entity Framework Core ve SQLite:** `AppDbContext`, API'de `AddDbContext` ile yapılandırılır; bağlantı dizesi `Data Source=ecommerce.db` olarak SQLite dosyasını belirtir. Infrastructure projesi EF Core SQLite sağlayıcısını kullanır.
+2. **Domain modeli ve eşlemeler:** `Product`, `Category`, `Customer`, `Order` ve `OrderItem` varlıkları eklendi. Ürün adı için zorunluluk ve 200 karakter sınırı model anotasyonlarıyla; SKU için zorunluluk ve 50 karakter sınırı ile `Price` için `decimal(18,2)` eşlemesi `AppDbContext` içinde tanımlanır. Kategori-ürün, müşteri-sipariş ve sipariş-sipariş kalemi ilişkileri navigation property'leriyle modellenir.
+3. **İlk migration:** `init` migration'ı `Products`, `Category`, `Customer`, `Order` ve `OrderItem` tablolarını ve ilişkili foreign key'leri oluşturur. Migration'da sipariş kaleminin sipariş foreign key'i, `OrderItem.OrderId` yerine `OrderItem.Id` alanına bağlanmıştır; model eşlemesi düzeltilip migration yenilenmeden şema beklenen ilişkiyi kurmaz.
+4. **Veritabanı kullanımının mevcut durumu:** `AppDbContext` yapılandırılmış olsa da `IProductRepository`, DI'da hâlâ `InMemoryProductRepository`'ye bağlanır. Bu nedenle ürün servisi EF Core veritabanını henüz kullanmaz; bellek içi repository'de yalnızca `ListAsync` uygulanmış, diğer operasyonlar tamamlanmamıştır.
 
 ## Çalıştırma
 
