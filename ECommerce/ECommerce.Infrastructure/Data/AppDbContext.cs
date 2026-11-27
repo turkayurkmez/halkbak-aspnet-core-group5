@@ -28,7 +28,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                                     .HasForeignKey(oi=>oi.Id)
                                     .OnDelete(DeleteBehavior.Cascade);
                                     
-
+       //Add-Migration init
     }
 
   
